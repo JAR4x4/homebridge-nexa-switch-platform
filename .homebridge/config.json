@@ -9,13 +9,13 @@
 		{
 			"platform": "NexaSwitchPlatform",
 			"name": "Nexa Switch Platform",
-			"emitterId": 31415,
 			"accessoryInformation": [
 				{
 					"name": "Example Switch",
 					"manufacturer": "Example Manufacturer",
 					"model": "Example Model",
 					"serialNumber": "693-29-284",
+					"emitterId": 31415,
 					"accessoryId": 0
 				}
 			]
