@@ -81,6 +81,7 @@ NexaSwitchPlatform.prototype.addAccessory = function(accessoryInformation) {
     accessory.context.manufacturer = accessoryInformation.manufacturer;
     accessory.context.model = accessoryInformation.model;
     accessory.context.accessoryId = accessoryInformation.accessoryId;
+    accessory.context.emitterId = accessoryInformation.emitterId;
 
     accessory.getService(Service.AccessoryInformation)
         .setCharacteristic(Characteristic.Manufacturer, accessoryInformation.manufacturer)
@@ -89,7 +90,7 @@ NexaSwitchPlatform.prototype.addAccessory = function(accessoryInformation) {
 
     const switchService = accessory.addService(Service.Switch, accessoryInformation.name);
     switchService.getCharacteristic(Characteristic.On)
-        .on("set", this.setSwitchOnCharacteristic.bind({ emitterId: this.config.emitterId,
+        .on("set", this.setSwitchOnCharacteristic.bind({ emitterId: accessoryInformation.emitterId,
                                                          accessoryIndex: accessoryInformation.accessoryId }));
 
     this.accessoriesToBeRegistered.push(accessory);
@@ -97,12 +98,12 @@ NexaSwitchPlatform.prototype.addAccessory = function(accessoryInformation) {
 
 NexaSwitchPlatform.prototype.configureAccessory = function(accessory) {
     this.log(`Restoring accessory '${accessory.context.name} (${accessory.context.manufacturer} ${accessory.context.model})'...`);
-    
+
     const switchService = accessory.getService(Service.Switch);
     switchService.getCharacteristic(Characteristic.On)
-        .on("set", this.setSwitchOnCharacteristic.bind({ emitterId: this.config.emitterId,
+        .on("set", this.setSwitchOnCharacteristic.bind({ emitterId: accessory.context.emitterId,
                                                          accessoryIndex: accessory.context.accessoryId }));
-    
+
     this.accessories.push(accessory);
 };
 
@@ -115,7 +116,7 @@ NexaSwitchPlatform.prototype.setSwitchOnCharacteristic = function(on, next) {
 NexaSwitchPlatform.prototype.validateConfig = function(config) {
     const platformSet = config.platform != null && typeof config.platform === 'string';
     const nameSet = config.name != null && typeof config.name === 'string';
-    const emitterIdSet = config.emitterId != null && typeof config.emitterId === 'number' && config.emitterId >= 1 && config.emitterId <= 67108862;
+
     let accessoryInformationSet = config.accessoryInformation != null;
     if (accessoryInformationSet) {
         for (let index in config.accessoryInformation) {
@@ -124,11 +125,12 @@ NexaSwitchPlatform.prototype.validateConfig = function(config) {
             const manufacturerSet = accessoryInformation.manufacturer != null && typeof accessoryInformation.manufacturer === 'string';
             const modelSet = accessoryInformation.model != null && typeof accessoryInformation.model === 'string';
             const serialNumberSet = accessoryInformation.serialNumber != null && typeof accessoryInformation.serialNumber === 'string';
-            accessoryInformationSet = nameSet && manufacturerSet && modelSet && serialNumberSet;
+            const emitterIdSet = accessoryInformation.emitterId != null && typeof accessoryInformation.emitterId === 'number' && accessoryInformation.emitterId >= 1 && accessoryInformation.emitterId <= 67108862;
+            accessoryInformationSet = nameSet && manufacturerSet && modelSet && serialNumberSet && emitterIdSet;
             if (!accessoryInformationSet) break;
         }
     }
-    return platformSet && nameSet && emitterIdSet && accessoryInformationSet;
+    return platformSet && nameSet && accessoryInformationSet;
 };
 
 NexaSwitchPlatform.prototype.accessoryRegistered = function(uuid) {
