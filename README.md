@@ -8,6 +8,13 @@ The prerequisites are:
 - piHomeEasy: a software for controlling devices using the HomeEasy protocol ([github.com/nbogojevic/piHomeEasy](https://github.com/nbogojevic/piHomeEasy))
 - Wiring Pi: a library for accessing the Pi's GPIO. The piHomeEasy software depends on it. ([wiringpi.com](http://wiringpi.com))
 
+How to install:
+sudo npm install -g https://github.com/JAR4x4/homebridge-nexa-switch-platform/tarball/master
+
+TO DO:
+- Add support for prededined switch type. (Light or Switch), the plugin now defaults to Switch.
+
+
 In your **_`config.json`_** -file, the following information needs to be added in order for the Nexa Switch Platform to be set up:
 ```json
 {
@@ -21,13 +28,13 @@ In your **_`config.json`_** -file, the following information needs to be added i
     {
       "platform": "NexaSwitchPlatform",
       "name": "Nexa Switch Platform",
-      "emitterId": 31415,
       "accessoryInformation": [
         {
           "name": "Switch",
           "manufacturer": "Nexa",
           "model": "PER-1500",
           "serialNumber": "481-48-592",
+          "emitterId": 31415,
           "accessoryId": 0
         }
       ]
